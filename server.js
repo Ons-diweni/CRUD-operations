@@ -1,5 +1,5 @@
 const http = require('http')
-const server = http.createServer(()=> console.log("hey i'm runnig"))
-server.listen(3002)
+const server = http.createServer()
+server.listen(3002 , ()=> console.log("hey i'm runnig") )
 
 
