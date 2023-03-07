@@ -6,8 +6,10 @@ const TODOValidater = require ('../middlewares/TODOValidater')
 
  
 router.post("/add",TODOValidater,TODOcontroller.add);
-//router.post("/get",TODOcontroller.get);
+router.get("/getAll",TODOcontroller.getTodos);
+router.get("/getById/:id",TODOcontroller.getTodoById);
 router.put("/update/:id",TODOcontroller.update)
+router.delete("/delete",TODOValidater,TODOcontroller.deleteT);
 
 
 

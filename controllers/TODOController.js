@@ -36,7 +36,7 @@ async function add (req, res, next) {
     });
   }
 
-  //********************************************************* delete ********************************** */
+  //********************************************************* delete **********************************************/
 
   async function deleteT(req,res){
     try{
@@ -48,4 +48,36 @@ async function add (req, res, next) {
     }
   }
 
-  module.exports={add,update,deleteT}
+  //***********************************************************getAll ************************************************/
+  async function getTodos  (req, res, next) {
+    TODO.find()
+      .then(todos => {
+        res.status(200).json({
+          message: 'TODOs fetched successfully!',
+          todos: todos
+        });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: 'Fetching TODOs failed!'
+        });
+      });
+  };
+  //****************************************************FindById******************************************************/
+  
+ async function getTodoById (req, res, next) {
+  TODO.findById(req.params.id)
+    .then(todo => {
+      if (todo) {
+        res.status(200).json(todo);
+      } else {
+        res.status(404).json({ message: 'TODO not found!' });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: 'Fetching TODO failed!'
+      });
+    });
+};
+  module.exports={add,update,deleteT,getTodos,getTodoById}
