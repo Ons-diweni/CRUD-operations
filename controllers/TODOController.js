@@ -7,8 +7,8 @@ async function add (req, res, next) {
     console.log("resultat:" + req.body);
   
     try {
-      const TODO = new TODO(req.body);
-      TODO.save((err, data) => {
+      const newTodo  = new TODO(req.body);
+      newTodo.save((err, data) => {
         if (err) {
           console.log(err);
            
