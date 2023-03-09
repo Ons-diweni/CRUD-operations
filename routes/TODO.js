@@ -11,7 +11,7 @@ router.post("/add" ,TodoValidator, TodoController.add)
 router.get('/todos', TodoController.find);
 
 // Route pour récupérer une tache par son ID
-router.get('/todo/:id', TodoController.find);
+router.get('/:id', TodoController.find);
 
 // Route pour supprimer une tache par son ID
 router.delete('/delete/:id', TodoController.delete);
