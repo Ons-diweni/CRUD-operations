@@ -6,9 +6,9 @@ try {const schema = yup.object().shape({
 
     Name: yup.string().min(3).required() ,
     Matricule : yup.string().min(7).required() ,
-    Score: yup.number().min(3).required() ,
+    Score: yup.number().required() ,
     Email_user: yup.string().email().required(),
-    Status: yup.boolean().required()
+    Status: yup.boolean()
     
     }) ;
     await schema.validate(req.body) 

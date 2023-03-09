@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 //Configurer TODORoute
 const TODORouter=require('./routes/TODO');
-app.use('/TODO',TODORouter);
+app.use('/todo',TODORouter);
 
 
 //Connection à la base de données 

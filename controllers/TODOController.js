@@ -1,83 +1,58 @@
-const express=require('express');
-const TODO = require('../models/TODO');
+const express = require ('express')
+const TODO = require ('../models/TODO')
 
 
-//******************************************************* Create *************************************** */
-async function add (req, res, next) {
-    console.log("resultat:" + req.body);
-  
-    try {
-      const newTodo  = new TODO(req.body);
-      newTodo.save((err, data) => {
-        if (err) {
-          console.log(err);
-           
-        }
-        console.log(data);
-        return res.json(data);
-      });
-    } catch (err) {
-      console.log(err);
+//***************************** Endpoint to Create a todo ****************/
+
+ exports.add = (req , res , next ) => {
+    console.log(req.body)
+    if(Object.keys(req.body).length === 0){
+        res.status(400).send({ message : "Content can not be emtpy!"});
+        return;
     }
+    const newTodo  = new User ({...req.body})
+    newTodo.save()
+    .then((todo)=>res.status(201).json({message:"Todo added with sucess !" , todo }))
+    .catch(err => res.status(400).json({message : err.message || "Some error occurred while creating a Todo"}));
+    
   }
 
-  //********************************************************* update  ********************************** */
+//***************************** Enpoint to  (get All todos - get todo By Id )  ******************/
 
-  async  function update(req, res, next) {
+exports.find = (req , res , next ) => {
+ 
+    const id = req.params.id ;
+    (id)? TODO.findOne({_id :req.params.id })
+    .then((todo) => {(todo)? res.send(todo):res.status(404).send({message :"Not found todo with id "+ req.params.id })})
+    .catch((err) =>res.status(500).send({ message: "Error retrieving todo with id " + req.params.id}))
+    :TODO.find()
+    .then((todos) => res.send(todos))
+    .catch((err)=> res.send({message : "Error retrieving todos"}))
+} 
+
+//**************************** Endpoint to delete a todo **************** */
+
+exports.delete = (req, res)=>{
     const id = req.params.id;
-    const TODO = req.body; 
-    TODO.updateOne({ _id: id }, TODO, function(err, data) {
-      if (err) {
-        console.log(err);
-      }
-      console.log(data);
+    TODO.findByIdAndDelete(id)
+    .then(todo => { (!todo)?  res.status(404).send({ message : `Cannot Delete todo with id ${id}. Maybe id is wrong`})
+    :res.send({ message : "todo was deleted successfully!"}) })
+    .catch(err =>{res.status(500).send({message: "Could not delete todo with id=" + id  , error : err}); });
+}
 
-      return res.json({ message: 'TODO updated' });
-    });
-  }
 
-  //********************************************************* delete **********************************************/
+//**************************** Endpoint to update a User **************** */
+exports.update = (req, res)=>{
 
-  async function deleteT(req,res){
-    try{
-      await TODO.findByIdAndRemove(req.params.id);
-      //console.log()
-      res.send("TODO deleted")
-    }catch(err){
-      res.send(err)
-    }
-  }
+    if(Object.keys(req.body).length === 0){ return res.status(400).send({ message : "todo with new informations must be provided"})}
 
-  //***********************************************************getAll ************************************************/
-  async function getTodos  (req, res, next) {
-    TODO.find()
-      .then(todos => {
-        res.status(200).json({
-          message: 'TODOs fetched successfully!',
-          todos: todos
-        });
-      })
-      .catch(error => {
-        res.status(500).json({
-          message: 'Fetching TODOs failed!'
-        });
-      });
-  };
-  //****************************************************FindById******************************************************/
-  
- async function getTodoById (req, res, next) {
-  TODO.findById(req.params.id)
-    .then(todo => {
-      if (todo) {
-        res.status(200).json(todo);
-      } else {
-        res.status(404).json({ message: 'TODO not found!' });
-      }
-    })
-    .catch(error => {
-      res.status(500).json({
-        message: 'Fetching TODO failed!'
-      });
-    });
-};
-  module.exports={add,update,deleteT,getTodos,getTodoById}
+    const id = req.params.id;
+
+    //The { useFindAndModify: false} option is used to avoid using the deprecated findAndModify() method
+    //The { new: true } option tells Mongoose to return the updated document instead of the original one.
+    TODO.findByIdAndUpdate(id,req.body, { useFindAndModify: false , new: true})
+    .then(todo => {(!todo) ? res.status(404).send({ message : `Cannot Update todo with ${id}. Maybe todo not found!`}) :res.send(todo)})
+    .catch(err => res.status(500).send({ message : "Error Update todo informations" , error : err}))
+}
+
+
