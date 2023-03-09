@@ -10,7 +10,7 @@ const TODO = require ('../models/TODO')
         res.status(400).send({ message : "Content can not be emtpy!"});
         return;
     }
-    const newTodo  = new User ({...req.body})
+    const newTodo  = new TODO ({...req.body})
     newTodo.save()
     .then((todo)=>res.status(201).json({message:"Todo added with sucess !" , todo }))
     .catch(err => res.status(400).json({message : err.message || "Some error occurred while creating a Todo"}));
